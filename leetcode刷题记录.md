@@ -8939,7 +8939,7 @@ class Solution {
 
 ### 6 Z字型变换
 
-主要是**巧设flag**
+主要是**巧设flag**，flag控制行数的上下遍历
 
 ![image-20251028163006568](/Users/zmjz/Library/Application Support/typora-user-images/image-20251028163006568.png)
 
