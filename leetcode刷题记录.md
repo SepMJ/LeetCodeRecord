@@ -9033,3 +9033,92 @@ class Solution {
 }
 //leetcode submit region end(Prohibit modification and deletion)
 ```
+
+## day81 2025-10-29
+
+### 125 验证回文串
+
+**思路：双指针**
+
+学会了两个函数
+
+1. 使用 **replaceAll()** 配合正则表达式来去除字符串中非数字字母的字符
+
+- [a-zA-Z0-9]：这是一个否定字符集。
+
+-  在 [] 内部表示“非”（否定）。a-zA-Z 匹配所有小写字母和大写字母。0-9 匹配所有数字。所以 [^a-zA-Z0-9] 匹配任何**不是**字母或数字的字符。那么字符就可以替换成""
+
+  s.replaceAll("[^a-zA-Z0-9]", "")
+
+2. 将字符串中大写字母转换成小写字母，小写字母转换成大写字母，直接使用 **str.toLowerCase()**
+
+   ```java
+   //如果在将所有大写字符转换为小写字符、并移除所有非字母数字字符之后，短语正着读和反着读都一样。则可以认为该短语是一个 回文串 。 
+   //
+   // 字母和数字都属于字母数字字符。 
+   //
+   // 给你一个字符串 s，如果它是 回文串 ，返回 true ；否则，返回 false 。 
+   //
+   // 
+   //
+   // 示例 1： 
+   //
+   // 
+   //输入: s = "A man, a plan, a canal: Panama"
+   //输出：true
+   //解释："amanaplanacanalpanama" 是回文串。
+   // 
+   //
+   // 示例 2： 
+   //
+   // 
+   //输入：s = "race a car"
+   //输出：false
+   //解释："raceacar" 不是回文串。
+   // 
+   //
+   // 示例 3： 
+   //
+   // 
+   //输入：s = " "
+   //输出：true
+   //解释：在移除非字母数字字符之后，s 是一个空字符串 "" 。
+   //由于空字符串正着反着读都一样，所以是回文串。
+   // 
+   //
+   // 
+   //
+   // 提示： 
+   //
+   // 
+   // 1 <= s.length <= 2 * 10⁵ 
+   // s 仅由可打印的 ASCII 字符组成 
+   // 
+   //
+   // Related Topics 双指针 字符串 👍 845 👎 0
+   
+   
+   //leetcode submit region begin(Prohibit modification and deletion)
+   class Solution {
+       public boolean isPalindrome(String s) {
+           // 正则表达式推荐
+           if (s.length() == 1) return true;
+           String str = s.replaceAll("[^a-zA-Z0-9]", "");// 去掉所有非字母数字的字符
+           // 把所有的大写字母全部变成小写字母
+           str = str.toLowerCase();
+           //使用双指针
+           int left = 0;
+           int right = str.length() - 1;
+           while (left <= right) {
+               if (str.charAt(left) != str.charAt(right)) {
+                   return false;
+               }
+               left++;
+               right--;
+           }
+           return true;
+   
+       }
+   }
+   //leetcode submit region end(Prohibit modification and deletion)
+   ```
