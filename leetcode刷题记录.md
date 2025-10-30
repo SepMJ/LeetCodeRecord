@@ -9122,3 +9122,166 @@ class Solution {
    }
    //leetcode submit region end(Prohibit modification and deletion)
    ```
+
+## day 82 2025-10-30
+
+### 30 串联所有单词的字串
+
+这道题的解题思路就是**滑动窗口**，那么怎么**判断窗口内的词与words完全匹配是关键**！！这道题挺难的，不太会写。。。这个解题过程的解释如下：
+
+即窗口内放入words.length个单词，然后开始滑动, 每次滑动一个词(词的长度都是一样)，并判断窗口内的单词是否由words组成，比如s = "barfoofoobarthefoobarman", words = ["bar","foo","the"]的情况，
+第一次滑动流程
+初始窗口 ['bar', 'foo','foo'] 未命中
+入'bar'出'bar' ['foo','foo','bar'] 未命中
+入'the'出'foo' ['foo','bar', 'the'] 命中 index 6
+入'foo'出'foo' ['bar','the', 'foo'] 命中 index 9
+入'bar'出'bar' ['the','foo','bar'] 命中index 12
+入'man'出'the' ['foo','bar','man'] 未命中
+结束
+第二次滑动流程
+初始窗口 ['arf','oof','oob'] 未命中
+划动过程略
+第三次滑动流程
+初始窗口 ['rfo','ofo','oba'] 未命中
+划动过程略
+
+无需第四次滑动，因为第四次滑动，初始窗口就是第一次滑动流程划入一个词后的结果
+['foo','foo','bar']后续流程与第一次滑动流程一模一样
+
+如何高效判断窗口内的词与words完全匹配是此题的另一个关键
+不考虑效率，自然可以复制一份窗口内容，然后遍历一次words，每次命中一个单词则删除掉copy window内该单词，遍历结束查看copy windows内是否有单词剩余，如果没有，则表示全部命中
+这里使用hashmap的方式，窗口是一个hashmap，存储每个单词出现的次数，以第一次滑动窗口为例
+
+初始窗口 {'bar':1, 'foo':2} 命中检测 {'bar':0, 'foo':1} 未命中
+入'bar'出'bar' {'foo':2,'bar':1} 命中检测 {'foo':0, 'foo':1,'bar':0} 未命中
+入'the'出'foo' ['foo':1,'bar':1, 'the':1] 命中检测{'foo':0, 'bar':0,'the':0} 命中
+略
+
+为了避免每次滑动完窗口，都要遍历一次words计算，可以初始就将words的值置为-1放入窗口, 这样只要窗口内所有词的出现次数是0 就是命中，而不匹配words的词划入的时候是1 划出之后变成0， 匹配words的词划入是0 划出又变成-1， 以第一次滑动窗口为例
+
+预置 {'bar':-1, 'foo':-1,'the':-1}
+初始窗口 {'bar':0,'foo':1, 'the':-1} 未命中
+入'bar'出'bar' {'bar':0,'foo':1, 'the':-1} 未命中
+入'the'出'foo' {'bar':0,'foo':0, 'the':0} 命中 index 6
+入'foo'出'foo' {'bar':0,'foo':0, 'the':0} 命中 index 9
+入'bar'出'bar' {'bar':0,'foo':0, 'the':0} 命中index 12
+入'man'出'the' {'bar':0,'foo':0, 'the':-1,'man':1} 未命中
+
+每次删除窗口map内计数为0的词，窗口map的大小为0，则命中
+
+```java
+//给定一个字符串 s 和一个字符串数组 words。 words 中所有字符串 长度相同。 
+//
+// s 中的 串联子串 是指一个包含 words 中所有字符串以任意顺序排列连接起来的子串。 
+//
+// 
+// 例如，如果 words = ["ab","cd","ef"]， 那么 "abcdef"， "abefcd"，"cdabef"， "cdefab"，
+//"efabcd"， 和 "efcdab" 都是串联子串。 "acdbef" 不是串联子串，因为他不是任何 words 排列的连接。 
+// 
+//
+// 返回所有串联子串在 s 中的开始索引。你可以以 任意顺序 返回答案。 
+//
+// 
+//
+// 示例 1： 
+//
+// 
+//输入：s = "barfoothefoobarman", words = ["foo","bar"]
+//输出：[0,9]
+//解释：因为 words.length == 2 同时 words[i].length == 3，连接的子字符串的长度必须为 6。
+//子串 "barfoo" 开始位置是 0。它是 words 中以 ["bar","foo"] 顺序排列的连接。
+//子串 "foobar" 开始位置是 9。它是 words 中以 ["foo","bar"] 顺序排列的连接。
+//输出顺序无关紧要。返回 [9,0] 也是可以的。
+// 
+//
+// 示例 2： 
+//
+// 
+//输入：s = "wordgoodgoodgoodbestword", words = ["word","good","best","word"]
+//输出：[]
+//解释：因为 words.length == 4 并且 words[i].length == 4，所以串联子串的长度必须为 16。
+//s 中没有子串长度为 16 并且等于 words 的任何顺序排列的连接。
+//所以我们返回一个空数组。
+// 
+//
+// 示例 3： 
+//
+// 
+//输入：s = "barfoofoobarthefoobarman", words = ["bar","foo","the"]
+//输出：[6,9,12]
+//解释：因为 words.length == 3 并且 words[i].length == 3，所以串联子串的长度必须为 9。
+//子串 "foobarthe" 开始位置是 6。它是 words 中以 ["foo","bar","the"] 顺序排列的连接。
+//子串 "barthefoo" 开始位置是 9。它是 words 中以 ["bar","the","foo"] 顺序排列的连接。
+//子串 "thefoobar" 开始位置是 12。它是 words 中以 ["the","foo","bar"] 顺序排列的连接。 
+//
+// 
+//
+// 提示： 
+//
+// 
+// 1 <= s.length <= 10⁴ 
+// 1 <= words.length <= 5000 
+// 1 <= words[i].length <= 30 
+// words[i] 和 s 由小写英文字母组成 
+// 
+//
+// Related Topics 哈希表 字符串 滑动窗口 👍 1282 👎 0
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+//leetcode submit region begin(Prohibit modification and deletion)
+class Solution {
+    public List<Integer> findSubstring(String s, String[] words) {
+        // 用滑动窗口来解决
+        // 怎么判断窗口里的字符串数组和给的字符串数组是一样的才是关键
+
+        List<Integer> res = new ArrayList<>();
+        int m = words.length;
+        int n = words[0].length();
+        int lens = s.length();
+        for (int i = 0; i < n; i++) {
+            if (i + m * n > lens) break;
+            Map<String, Integer> differ = new HashMap<>();
+
+            for (int j = 0; j < m; j++) {
+                String word = s.substring(i + j * n, i + (j + 1) * n);
+                differ.put(word, differ.getOrDefault(word, 0) + 1);
+            }
+
+            for (String word : words) {
+                differ.put(word, differ.getOrDefault(word, 0) - 1);
+                if (differ.get(word) == 0) {
+                    differ.remove(word);
+                }
+
+            }
+            for (int start = i; start < lens - m * n + 1; start += n) {
+                if (start != i) {
+                    String word = s.substring(start + (m - 1) * n, start + m * n);
+                    differ.put(word, differ.getOrDefault(word, 0) + 1);
+                    if (differ.get(word) == 0) {
+                        differ.remove(word);
+                    }
+                    word = s.substring(start - n, start);
+                    differ.put(word, differ.getOrDefault(word, 0) - 1);
+                    if (differ.get(word) == 0) {
+                        differ.remove(word);
+                    }
+
+                }
+                if (differ.isEmpty()) {
+                    res.add(start);
+                }
+            }
+
+        }
+        return res;
+
+    }
+}
+//leetcode submit region end(Prohibit modification and deletion)
+```
