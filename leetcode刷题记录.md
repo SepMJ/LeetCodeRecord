@@ -9285,3 +9285,94 @@ class Solution {
 }
 //leetcode submit region end(Prohibit modification and deletion)
 ```
+
+## day83 2025-10-31
+
+### 205 同构字符串
+
+这道题比较简单，利用的是哈希表
+
+hashmap判断key是否存在，也可以判断value是否存在
+
+```java
+map.containsKey（） // 判断key是否存在
+```
+
+```java
+map.containsValue() // 判断value是否存在
+```
+
+```java
+//给定两个字符串 s 和 t ，判断它们是否是同构的。 
+//
+// 如果 s 中的字符可以按某种映射关系替换得到 t ，那么这两个字符串是同构的。 
+//
+// 每个出现的字符都应当映射到另一个字符，同时不改变字符的顺序。不同字符不能映射到同一个字符上，相同字符只能映射到同一个字符上，字符可以映射到自己本身。 
+//
+// 
+//
+// 示例 1: 
+//
+// 
+//输入：s = "egg", t = "add"
+//输出：true
+// 
+//
+// 示例 2： 
+//
+// 
+//输入：s = "foo", t = "bar"
+//输出：false 
+//
+// 示例 3： 
+//
+// 
+//输入：s = "paper", t = "title"
+//输出：true 
+//
+// 
+//
+// 提示： 
+//
+// 
+// 
+//
+// 
+// 1 <= s.length <= 5 * 10⁴ 
+// t.length == s.length 
+// s 和 t 由任意有效的 ASCII 字符组成 
+// 
+//
+// Related Topics 哈希表 字符串 👍 800 👎 0
+
+
+import java.util.HashMap;
+import java.util.Map;
+
+//leetcode submit region begin(Prohibit modification and deletion)
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+
+        // 1. 长度必须要是一样
+        if (s.length() != t.length()) return false;
+        // 2. 长度一样之后创建一个哈希表
+        Map<Character, Character> map = new HashMap<>();
+        int len = s.length();
+        for (int i = 0; i < len; i++) {
+            if (!map.containsKey(s.charAt(i)) && !map.containsValue(t.charAt(i))) {
+                map.put(s.charAt(i), t.charAt(i));
+            }
+            if (!map.containsKey(s.charAt(i)) && map.containsValue(t.charAt(i))) {
+                return false;
+            }
+            if (map.containsKey(s.charAt(i)) && map.get(s.charAt(i)) != t.charAt(i)) {
+                return false;
+            }
+
+        }
+        return true;
+
+    }
+}
+//leetcode submit region end(Prohibit modification and deletion)
+```
