@@ -9376,3 +9376,95 @@ class Solution {
 }
 //leetcode submit region end(Prohibit modification and deletion)
 ```
+
+### day84 2025-11-3
+
+### 290 单词规律
+
+和上述205一样的方法，都是哈希表，比较简单，不过这道题是字符到字符串之间的映射，字符串之间的比较要用**equals()**！！
+
+注意点：**字符串之间用equals()比较，不是==或者!=**
+
+```java
+//给定一种规律 pattern 和一个字符串 s ，判断 s 是否遵循相同的规律。 
+//
+// 这里的 遵循 指完全匹配，例如， pattern 里的每个字母和字符串 s 中的每个非空单词之间存在着双向连接的对应规律。具体来说： 
+//
+// 
+// pattern 中的每个字母都 恰好 映射到 s 中的一个唯一单词。 
+// s 中的每个唯一单词都 恰好 映射到 pattern 中的一个字母。 
+// 没有两个字母映射到同一个单词，也没有两个单词映射到同一个字母。 
+// 
+//
+// 
+//
+// 示例1: 
+//
+// 
+//输入: pattern = "abba", s = "dog cat cat dog"
+//输出: true 
+//
+// 示例 2: 
+//
+// 
+//输入:pattern = "abba", s = "dog cat cat fish"
+//输出: false 
+//
+// 示例 3: 
+//
+// 
+//输入: pattern = "aaaa", s = "dog cat cat dog"
+//输出: false 
+//
+// 
+//
+// 提示: 
+//
+// 
+// 1 <= pattern.length <= 300 
+// pattern 只包含小写英文字母 
+// 1 <= s.length <= 3000 
+// s 只包含小写英文字母和 ' ' 
+// s 不包含 任何前导或尾随对空格 
+// s 中每个单词都被 单个空格 分隔 
+// 
+//
+// Related Topics 哈希表 字符串 👍 723 👎 0
+
+
+import java.util.HashMap;
+import java.util.Map;
+
+//leetcode submit region begin(Prohibit modification and deletion)
+class Solution {
+    public boolean wordPattern(String pattern, String s) {
+
+
+        String[] str = s.split(" ");
+
+        if (pattern.length() != str.length)
+            return false;
+
+        // 创建哈希表
+        Map<Character, String> map = new HashMap<>();
+        for (int i = 0; i < str.length; i++) {
+            if (!map.containsKey(pattern.charAt(i)) && !map.containsValue(str[i])) {
+                map.put(pattern.charAt(i), str[i]);
+            }
+            if (map.containsValue(str[i]) && !map.containsKey(pattern.charAt(i))) {
+                return false;
+            }
+            //字符串之间的比较用equals()
+            if (map.containsKey(pattern.charAt(i)) && !map.get(pattern.charAt(i)).equals(str[i])) {
+                return false;
+            }
+
+
+        }
+        return true;
+
+    }
+}
+//leetcode submit region end(Prohibit modification and deletion)
+```
+
