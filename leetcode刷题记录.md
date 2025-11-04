@@ -9377,7 +9377,7 @@ class Solution {
 //leetcode submit region end(Prohibit modification and deletion)
 ```
 
-### day84 2025-11-3
+## day84 2025-11-3
 
 ### 290 单词规律
 
@@ -9536,6 +9536,113 @@ class Solution {
 
         }
         return false;
+
+
+    }
+}
+//leetcode submit region end(Prohibit modification and deletion)
+```
+
+## Day85 2025-11-4
+
+### 228 汇总区间
+
+就是找个所有连续的区间，比较简单的一道题
+
+把int整型变成string用的是 **String.valueOf()**、**Integer.toString()**、或者**直接用"+"号**
+
+可以直接用+号，通过java的自动类型转换，在底层，Java 编译器会创建一个 StringBuilder (或 StringBuffer) 对象，然后进行 append 操作，最后再调用 toString()。但是，大量循环中，性能比较差。推荐前两种。
+
+```java
+//给定一个 无重复元素 的 有序 整数数组 nums 。 
+//
+// 区间 [a,b] 是从 a 到 b（包含）的所有整数的集合。 
+//
+// 返回 恰好覆盖数组中所有数字 的 最小有序 区间范围列表 。也就是说，nums 的每个元素都恰好被某个区间范围所覆盖，并且不存在属于某个区间但不属于 
+//nums 的数字 x 。 
+//
+// 列表中的每个区间范围 [a,b] 应该按如下格式输出： 
+//
+// 
+// "a->b" ，如果 a != b 
+// "a" ，如果 a == b 
+// 
+//
+// 
+//
+// 示例 1： 
+//
+// 
+//输入：nums = [0,1,2,4,5,7]
+//输出：["0->2","4->5","7"]
+//解释：区间范围是：
+//[0,2] --> "0->2"
+//[4,5] --> "4->5"
+//[7,7] --> "7"
+// 
+//
+// 示例 2： 
+//
+// 
+//输入：nums = [0,2,3,4,6,8,9]
+//输出：["0","2->4","6","8->9"]
+//解释：区间范围是：
+//[0,0] --> "0"
+//[2,4] --> "2->4"
+//[6,6] --> "6"
+//[8,9] --> "8->9"
+// 
+//
+// 
+//
+// 提示： 
+//
+// 
+// 0 <= nums.length <= 20 
+// -2³¹ <= nums[i] <= 2³¹ - 1 
+// nums 中的所有值都 互不相同 
+// nums 按升序排列 
+// 
+//
+// Related Topics 数组 👍 463 👎 0
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+//leetcode submit region begin(Prohibit modification and deletion)
+class Solution {
+    public List<String> summaryRanges(int[] nums) {
+        List<String> res = new ArrayList<>();
+        if (nums.length == 0) return res;
+        int begin = 0;
+        int end = 0;
+        int lens = nums.length;
+        for (int i = 0; i < lens - 1; i++) {
+            if (nums[i + 1] - nums[i] == 1) {
+                end++;
+                if (i + 1 == lens - 1) {
+                    String str = String.valueOf(nums[begin]) + "->" + String.valueOf(nums[end]);
+                    res.add(str);
+                }
+            } else {
+                if (begin != end) {
+                    String str = String.valueOf(nums[begin]) + "->" + String.valueOf(nums[end]);
+                    res.add(str);
+                } else {
+                    String str = String.valueOf(nums[begin]);
+                    res.add(str);
+                }
+                end++;
+                begin = end;
+            }
+
+        }
+        if (begin == end) {
+            String str = String.valueOf(nums[begin]);
+            res.add(str);
+        }
+        return res;
 
 
     }
