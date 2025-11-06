@@ -9749,3 +9749,151 @@ class Solution {
 }
 //leetcode submit region end(Prohibit modification and deletion)
 ```
+
+## DAY87 2025-11-6
+
+### 71 简化区间
+
+这种目录结构的就是会用栈来解决，栈的实现一般选择的是双端队列
+
+`Deque<String> stack = new ArrayDeque<>();`//双端队列实现栈
+
+只需要想明白什么哪些是需要入栈的就可以！！出栈的情况就一种，就是遇到上级目录的时候才会出栈。
+
+```java
+//给你一个字符串 path ，表示指向某一文件或目录的 Unix 风格 绝对路径 （以 '/' 开头），请你将其转化为 更加简洁的规范路径。 
+//
+// 在 Unix 风格的文件系统中规则如下： 
+//
+// 
+// 一个点 '.' 表示当前目录本身。 
+// 此外，两个点 '..' 表示将目录切换到上一级（指向父目录）。 
+// 任意多个连续的斜杠（即，'//' 或 '///'）都被视为单个斜杠 '/'。 
+// 任何其他格式的点（例如，'...' 或 '....'）均被视为有效的文件/目录名称。 
+// 
+//
+// 返回的 简化路径 必须遵循下述格式： 
+//
+// 
+// 始终以斜杠 '/' 开头。 
+// 两个目录名之间必须只有一个斜杠 '/' 。 
+// 最后一个目录名（如果存在）不能 以 '/' 结尾。 
+// 此外，路径仅包含从根目录到目标文件或目录的路径上的目录（即，不含 '.' 或 '..'）。 
+// 
+//
+// 返回简化后得到的 规范路径 。 
+//
+// 
+//
+// 示例 1： 
+//
+// 
+// 输入：path = "/home/" 
+// 
+//
+// 输出："/home" 
+//
+// 解释： 
+//
+// 应删除尾随斜杠。 
+//
+// 示例 2： 
+//
+// 
+// 输入：path = "/home//foo/" 
+// 
+//
+// 输出："/home/foo" 
+//
+// 解释： 
+//
+// 多个连续的斜杠被单个斜杠替换。 
+//
+// 示例 3： 
+//
+// 
+// 输入：path = "/home/user/Documents/../Pictures" 
+// 
+//
+// 输出："/home/user/Pictures" 
+//
+// 解释： 
+//
+// 两个点 ".." 表示上一级目录（父目录）。 
+//
+// 示例 4： 
+//
+// 
+// 输入：path = "/../" 
+// 
+//
+// 输出："/" 
+//
+// 解释： 
+//
+// 不可能从根目录上升一级目录。 
+//
+// 示例 5： 
+//
+// 
+// 输入：path = "/.../a/../b/c/../d/./" 
+// 
+//
+// 输出："/.../b/d" 
+//
+// 解释： 
+//
+// "..." 在这个问题中是一个合法的目录名。 
+//
+// 
+//
+// 提示： 
+//
+// 
+// 1 <= path.length <= 3000 
+// path 由英文字母，数字，'.'，'/' 或 '_' 组成。 
+// path 是一个有效的 Unix 风格绝对路径。 
+// 
+//
+// Related Topics 栈 字符串 👍 840 👎 0
+
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+//leetcode submit region begin(Prohibit modification and deletion)
+class Solution {
+    public String simplifyPath(String path) {
+        // 用栈
+        // 这个栈是用双端队列实现的
+        String[] names = path.split("/");
+        Deque<String> stack = new ArrayDeque<>();//双端队列实现栈
+
+        for (String name : names) {
+            if ("..".equals(name)) {
+                // 说明要弹出当前栈顶元素
+                if (!stack.isEmpty()) {
+                    stack.pollLast();
+                }
+            } else if (name.length() > 0 && !".".equals(name)) {
+                stack.offerLast(name);
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+
+        if (stack.isEmpty()) {
+            sb.append("/");
+        } else {
+
+            while (!stack.isEmpty()) {
+                sb.append("/");
+                sb.append(stack.pollFirst());
+            }
+        }
+        return sb.toString();
+
+
+    }
+}
+//leetcode submit region end(Prohibit modification and deletion)
+```
