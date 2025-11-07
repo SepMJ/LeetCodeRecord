@@ -9897,3 +9897,124 @@ class Solution {
 }
 //leetcode submit region end(Prohibit modification and deletion)
 ```
+
+## Day 88 2025-11-7
+
+### 92 反转链表II
+
+有多种解法，今天自己使用的是用栈的方法
+
+这种反转的解法：头插法、虚拟头结点、还有这种用栈仅仅增加了一点空间，但是逻辑会清晰很多，可读性也会很高。
+
+```java
+//给你单链表的头指针 head 和两个整数 left 和 right ，其中 left <= right 。请你反转从位置 left 到位置 right 的链
+//表节点，返回 反转后的链表 。
+//
+// 
+//
+// 示例 1： 
+// 
+// 
+//输入：head = [1,2,3,4,5], left = 2, right = 4
+//输出：[1,4,3,2,5]
+// 
+//
+// 示例 2： 
+//
+// 
+//输入：head = [5], left = 1, right = 1
+//输出：[5]
+// 
+//
+// 
+//
+// 提示： 
+//
+// 
+// 链表中节点数目为 n 
+// 1 <= n <= 500 
+// -500 <= Node.val <= 500 
+// 1 <= left <= right <= n 
+// 
+//
+// 
+//
+// 进阶： 你可以使用一趟扫描完成反转吗？ 
+//
+// Related Topics 链表 👍 2023 👎 0
+
+
+//leetcode submit region begin(Prohibit modification and deletion)
+
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
+/*
+
+public class ListNode {
+    int val;
+    ListNode next;
+
+    ListNode() {
+    }
+
+    ListNode(int val) {
+        this.val = val;
+    }
+
+    ListNode(int val, ListNode next) {
+        this.val = val;
+        this.next = next;
+    }
+}
+*/
+
+class Solution {
+    public ListNode reverseBetween(ListNode head, int left, int right) {
+        // 虚拟头结点也可以实现
+        // 借助一个栈来实现
+        Deque<Integer> stack = new ArrayDeque<>();
+        int index = 1;
+        ListNode pre = null;
+        ListNode end = null;
+        ListNode node = head;
+        while (node != null) {
+            if (index == left - 1) {
+                // 标记前一个pre结点
+                pre = node;
+            }
+            // 标记后面一个结点
+            if (index == right + 1) {
+                end = node;
+            }
+            if (index >= left && index <= right) {
+                // 入栈
+                stack.offerLast(node.val);
+            }
+            node = node.next;
+            index++;
+        }
+        // pre可能为null而且end也可可能为null
+        // 要解决这个问题就是用虚拟头结点来解决
+        ListNode vhead = new ListNode(-600);
+        vhead.next = head;
+
+        ListNode cur = new ListNode(stack.pollLast());
+        if (pre != null) {
+            pre.next = cur;
+        } else {
+            vhead.next = cur;
+        }
+        while (!stack.isEmpty()) {
+            ListNode newNode = new ListNode(stack.pollLast());
+            cur.next = newNode;
+            cur = cur.next;
+        }
+        cur.next = end;
+        return vhead.next;
+    }
+
+}
+//leetcode submit region end(Prohibit modification and deletion)
+```
